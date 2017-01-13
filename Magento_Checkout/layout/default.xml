@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="columns.top">
+        <referenceBlock name="page.main.title" remove="true"/>
+        </referenceContainer>
+        <move element="minicart" destination="top-right-wrapper" before="-"/>
+        <referenceContainer name="header-wrapper">
+            <container name="top-right-wrapper" htmlTag="div" htmlClass="top-right-wrapper" after="topSearch">
+                <block class="Magento\Directory\Block\Currency" name="currency" template="currency.phtml"/>
+                <block class="Magento\Checkout\Block\Cart\Sidebar" name="customhead"  template="custom_head.phtml"/>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

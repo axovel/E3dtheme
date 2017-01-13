@@ -1,0 +1,33 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="header.panel.wrapper" remove="true" />
+        <referenceBlock name="footer_links" remove="true"/>
+        <referenceBlock name="catalog.compare.link" remove="true"/>
+        <referenceContainer name="header.container">
+            <block class="Magento\Framework\View\Element\Template" name="currency.disclaimer" before="-" template="Magento_Theme::currency_disclaimer.phtml"/>
+            <block class="Magento\Theme\Block\Html\Topmenu" name="custommenu_top" after="currency.disclaimer" template="Magento_Theme::custom_menu_top.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="page.top">
+            <block class="Magento\Theme\Block\Html\Topmenu" name="custommenu" before="navigation.sections" template="custom_menu.phtml"/>
+            <referenceBlock name="breadcrumbs" remove="true" />
+            <referenceBlock name="store.settings.currency" remove="true"/>
+            <referenceBlock name="store.links" remove="true"/>
+        </referenceContainer>
+        <referenceContainer name="footer-container">
+            <container name="footer-wrapper" as="footer-wrapper" htmlTag="div" htmlClass="footer-wrap">
+            <block class="Magento\Theme\Block\Html\Footer" name="customfooter" before="footer" template="custom_footer.phtml"/>
+            <container name="footer" as="footer" label="Page Footer" htmlTag="div" htmlClass="footer content">
+                <block class="Magento\Store\Block\Switcher" name="store_switcher" as="store_switcher" template="switch/stores.phtml"/>
+                <block class="Magento\Framework\View\Element\Html\Links" name="footer_links">
+                    <arguments>
+                        <argument name="css_class" xsi:type="string">footer links</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Theme\Block\Html\Footer" name="copyright" template="html/copyright.phtml"/>
+                <block class="Magento\Framework\View\Element\Template" name="report.bugs" template="Magento_Theme::html/bugreport.phtml" />
+            </container>
+            <block class="Magento\Theme\Block\Html\Footer" name="customfooter1" template="custom_footer_below.phtml"/>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

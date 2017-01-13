@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+<div class="logout-wrapper">
+    <p><?php /* @escapeNotVerified */ echo __('You have successfully signed out and will be automatically redirected to our homepage in 5 seconds.') ?></p>
+    <p><i class="fa fa-sign-out" aria-hidden="true"></i><?php echo __('If you are not redirected,');?><a href="<?php echo $block->getUrl()?>"><?php echo __('click here.');?></a></p>
+</div>
+<script>
+    require([
+        "jquery",
+        "mage/mage"
+    ], function($){
+
+        $($.mage.redirect("<?php /* @escapeNotVerified */ echo $block->getUrl() ?>", "assign", 5000));
+
+    });
+</script>

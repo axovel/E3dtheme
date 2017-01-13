@@ -1,0 +1,49 @@
+<div class="left-community">
+    <span><?php echo __('Latest Tweets');?></span>
+    <div class="tweet-community">
+<?php
+/**
+ * Twitter Posts
+ *@var $block \Custom\TwitterPost\Block\TwitterPost;
+ */
+
+$twitterPost = $this->getTwitterMentioned();
+
+foreach($twitterPost as $tp){?>
+
+    <ul>
+    <li>
+        <a href="<?php echo $tp['custom_url']?>"><?php echo $tp['text']?></a>
+    </li>
+    <li>
+        <?php echo $tp['created_at']?>
+    </li>
+    </ul>
+
+<?php }
+?>
+    </div>
+<?php /** forum posts.. */ ?>
+
+    <div class="forum_posts">
+        <span><?php echo  __('Latest from E3D Forum');?></span>
+    <?php
+    $get = file_get_contents('https://forum.e3d-online.com/index.php?forums/-/index.rss');
+    $xml_data = simplexml_load_string($get);
+
+
+    $count=0;
+    foreach($xml_data->channel->item as $entry) {
+        if($count == 3 ) {
+            break;
+        }
+        echo "<ul>";
+        echo "<li class='forum-title'><a href='$entry->link' title='$entry->title'>" . $entry->title . "</a></li>";
+        echo "<li class='forum-content'>".$entry->children('dc', true)->creator;echo ', '; echo $entry->pubDate ."</li>";
+
+        $count++;
+        echo "</ul>";
+    }
+    ?>
+    </div>
+</div>

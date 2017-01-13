@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="columns.top">
+            <referenceBlock name="page.main.title" remove="true"/>
+            <container name="category.view.container" htmlTag="div" htmlClass="category-view" after="-">
+                <block class="Magento\Framework\View\Element\Template" name="customtabs" before="footer" template="Magento_Catalog::custom_tabs.phtml"/>
+            </container>
+        </referenceContainer>
+        <container name="page.wrapper" as="page_wrapper" htmlTag="div" htmlClass="page-wrapper">
+            <container name="slider-home-category" after="content"  htmlTag="main" htmlClass="slider-home-category all-post-container">
+                <block class="Custom\TwitterPost\Block\TwitterPost" name="catalog_product_posts" after="require-cookie" template="Magento_Theme::twitter_posts.phtml"/>
+            </container>
+        </container>
+    </body>
+</page>

@@ -1,0 +1,141 @@
+<?php
+/**
+ * Custom tab list page template
+ *
+ * @var $block Magento\Framework\View\Element\Template
+ */
+?>
+<?php $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registryInstance = $objectManager->get('\Magento\Framework\Registry');
+$currentProduct = $registryInstance->registry('current_product');
+$categoryInstance = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
+$abstract = $objectManager->get('\Magento\Catalog\Block\Product\AbstractProduct');
+$catId = $currentProduct->getCategoryIds();
+$catFinalId = 0;
+$categoryDescription = '';
+if(isset($catId[0])) {
+    $catFinalId = $catId[0];
+}
+if($catFinalId) {
+    $categoryDescription = $categoryInstance->create()
+        ->load($catFinalId)
+        ->getDescription();
+
+    $categoryImage = $categoryInstance->create()
+        ->load($catFinalId)
+        ->getImageUrl();
+    if($categoryImage =='') {
+        $categoryImage = $this->getViewFileUrl('Magento_Catalog/images') . '/product/placeholder/image.jpg';
+    }
+}
+
+$priceInstance = $objectManager->get('\Magento\Framework\Pricing\PriceCurrencyInterface');
+$storeManager = $objectManager->get('Magento\Store\Model\StoreManagerInterface');
+$currencyCode = $priceInstance->getCurrency()->getCurrencySymbol();
+$store = $storeManager->getStore()->getStoreId(); //get current store id if store id not get passed
+
+$oldPrice = $currentProduct->getPrice();
+$specialPrice = $currentProduct->getSpecialPrice();
+$rate = $priceInstance->convert($oldPrice, $store, $curreny=NULL);
+
+$specialRate = $priceInstance->convert($specialPrice, $store, $curreny=NULL);
+$pro = $objectManager->get('Magento\Catalog\Model\Product');
+$list = $objectManager->get('Magento\Catalog\Block\Product\ListProduct');
+$baseUrl = $storeManager->getStore()->getUrl('pub/media/catalog').'product';
+?>
+<div class="top-tab-container detail-tab">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="customiz-tab active"><a class="nav-tabs-active"><?php echo __("product info");?></a></li>
+        <li class="browse-tab"><a><?php echo __("you'll also need");?></a></li>
+    </ul>
+</div>
+<?php $upsellProducts = $currentProduct->getUpSellProducts();
+if(count($upsellProducts)){
+?>
+<div class="extra-detail" style="display:none">
+    <p class="extra-detail-title"><?php echo __("You'll Also Need");?></p>
+    <div class="extra-detail-section">
+        <?php foreach($upsellProducts as $upsell){
+            $productDetail = $pro->load($upsell->getData('entity_id'));
+            ?>
+            <div class="upsell-image">
+                <a href="<?php echo $upsell->getProductUrl();?>">
+                    <image src="<?php echo $baseUrl.$productDetail->getThumbnail()?>" width="120px" height="120px"/>
+                    <div class="upsell-detail">
+                    <span class="name-upsell"><?php echo __($productDetail->getName())?></span>
+
+                    <span class="price-upsell"><?php echo $list->getProductPrice($productDetail)?></span>
+                    </div>
+                </a>
+                <?php $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+                $listBlock = $objectManager->get('\Magento\Catalog\Block\Product\ListProduct');
+
+                $addToCartUrl =  $listBlock->getAddToCartUrl($upsell);?>
+
+                <form data-role="tocart-form" action="<?php echo $addToCartUrl; ?>" method="post">
+                    <?php echo $block->getBlockHtml('formkey')?>
+                    <button type="submit"
+                            title="Add to Cart"
+                            class="upsell-add action tocart primary">
+                        <span>Add to Cart</span>
+                    </button>
+                </form>
+            </div>
+        <?php }?>
+    </div>
+</div>
+<?php }else{?>
+    <p class="upsell-msg" style="display:none"><?php echo __('We don\'t have any specific recommendations for this product at the moment.');?></p>
+<?php }?>
+<div class="product-name-detail"><?php if(is_object($currentProduct)):echo $currentProduct->getName();endif;?></div>
+<?php if(is_object($currentProduct)):?>
+    <div class="simple-product-price">
+
+        <?php if((int)$specialPrice !=0){?>
+        <div class="old-price">
+            <?php echo $currencyCode.$rate;?>
+        </div>
+        <div class="special-price">
+            <?php  echo $currencyCode.$specialRate;?>
+        </div>
+        <?php }else{?>
+        <div class="special-price">
+            <?php echo $currencyCode.$rate;?>
+        </div>
+        <?php }?>
+    </div>
+<?php endif;?>
+
+<style>
+    div#qty-error:after {
+        content: "<?php echo __('Qty must  be more than zero')?>";
+        position: absolute;
+    }
+</style>
+<?php if($currentProduct->getData('is_configurator')){?>
+    <script type="text/javascript">
+        requirejs(['jquery'],function(jQuery) {
+            jQuery('.simple-product-price, .upsell-msg').hide();
+        });
+    </script>
+    <div class="category-information-section" style="display:none">
+        <img class="category-image" src="<?php echo $categoryImage; ?>"/>
+        <div class="category-content">
+            <div class="category-heading"><?php echo __('Category Information')?></div>
+            <?php if($categoryDescription!=''){
+                echo $categoryDescription;
+            }
+            ?></div>
+    </div>
+<?php }?>
+<!-- toggle active class for custom options -->
+<script type="text/javascript">
+    requirejs(['jquery'],function(jQuery) {
+        jQuery('.togglelabel').click(function(){
+            jQuery(this).toggleClass('label-color');
+            jQuery(this).parent(".togglefield").toggleClass('left-border');
+        })
+    });
+</script>
+

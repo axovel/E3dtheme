@@ -1,0 +1,65 @@
+<?php
+/**
+ * Twitter Posts
+ *@var $block \Custom\TwitterPost\Block\TwitterPost;
+ */
+
+$twitterPost = $this->getTwitterPosts();
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$postInstance = $objectManager->get('FishPig\WordPress\Model\Post');
+$requestHomepage = $objectManager->get('Magento\Framework\App\Request\Http');
+$posts = $postInstance->getCollection()
+	->addFieldToFilter('post_status','publish')  //only published posts
+	->addFieldToFilter('id',array('nin'=>2))//for ignoring sample post
+	->setPageSize(4)
+	->setCurPage(1);
+
+?>
+
+<div class="twitter-other-post">
+<span class="latest-title"><?php echo __('Latest From E3d');?></span>
+<ul>
+	<?php $j=0;foreach($posts as $i=>$po):?>
+	<?php if($j==3):?>
+		<li>
+			<a href="<?php echo $po->getUrl()?>">
+				<div class="post-detail-group">
+					<span class="article-sign"><?php echo __('Article');?></span>
+					<span class="post-title-list"><?php echo $po->getPostTitle();?></span>
+					<span class="post-desc"><?php echo $po->getPostContent();?></span>
+				</div>
+				<?php if ($image = $po->getImage()) {
+					$postImage = $image->getAvailableImage();
+				}
+				else{
+					$postImage = 'http://pbs.twimg.com/media/Cq8QeyHVMAA7PHC.jpg';
+				}?>
+				<div class="post-image"><img src="<?php echo $postImage;?>"/></div>
+			</a>
+		</li>
+		<?php endif;$j++;
+		endforeach;
+	?>
+<?php foreach($twitterPost as $i=>$tp){?>
+    <li>
+        <a href="<?php echo $tp['post_url']?>">
+            <img src="<?php if($tp['media_url'] !=''){echo $tp['media_url'];}else{echo $block->getViewFileUrl('images/Twitter_logo_blue.png');}?>" alt="tweets"/>
+            <span class="tweets-list"><?php echo $tp['text']?></span>
+            <i class="fa fa-twitter" aria-hidden="true"></i>
+            <span class="tweet-time"><?php echo $tp['created_at']?></span>
+            <span class="tweet-user"><?php echo __('By').' '.$tp['user_name']?></span>
+        </a>
+    </li>
+<?php if($i==1){break;} }
+?>
+	<li id="video-wrap">
+		<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('home_video_thumbnail')->toHtml();?>
+	</li>
+</ul>
+</div>
+<?php if ($requestHomepage->getFullActionName() == 'cms_index_index'){?>
+<div class="twitter-other-post">
+	<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('video-section')->toHtml();?>
+</div>
+<?php }?>

@@ -1,0 +1,31 @@
+<!-- custom top link -->
+
+<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('custom_menu_below_link')->toHtml();?>
+<script type="text/javascript" xml="space">// <![CDATA[
+  require(['jquery', 'jquery/ui'], function($){
+
+        // add menu tab as active
+        $('.cat-list').click(function(){
+            sessionStorage.setItem('lastTab', $(this).attr('id'));
+        });
+
+        var lastTab = sessionStorage.getItem('lastTab');
+        if (lastTab) {
+          $('#'+lastTab).addClass('active');
+        }
+
+        //menu active and hover effect
+        $(".hotend-header").mouseover(function(){
+            var id = $(this).attr('id');
+            $("."+id).show();
+            $(this).addClass('active');
+               
+         });
+        $(".hotend-header").mouseout(function(){
+            var id = $(this).attr('id');
+            $("."+id).hide();
+            $(this).removeClass('active');
+                
+        });
+    });
+</script>

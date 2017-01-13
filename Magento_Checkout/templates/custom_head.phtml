@@ -1,0 +1,33 @@
+<!-- custom head template-->
+
+<?php $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
+
+?>
+<div class="other-head">
+    <span class="fab">
+        <a class="user-tooltip-bottom" href="#">
+            <i class="material-icons">person</i>
+        </a>
+    </span>
+    <span class="myaccount-dropdown" style="display:none">
+        <ul>
+            <?php if(!$customerSession->isLoggedIn()) {?>
+                <li><a href="<?php echo $this->getUrl('customer/account/login', ['_secure' => true]);?>"><?php echo __('Login/Register');?><i class="fa fa-sign-in" aria-hidden="true"></i></a></li>
+            <?php }else{?>
+                <li><a href="<?php echo $this->getUrl('customer/account', ['_secure' => true]);?>"><?php echo __('My Account');?><i class="fa fa-pencil-square" aria-hidden="true"></i></a></li>
+                <li><a href="<?php echo $this->getUrl('customer/account/logout', ['_secure' => true]);?>"><?php echo __('Logout');?><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+            <?php }?>
+            <li><a href="<?php echo $this->getUrl('sales/order/history', ['_secure' => true]);?>"><?php echo __('Orders');?><i class="fa fa-archive" aria-hidden="true"></i></a></li>
+            <li><a href="<?php echo $this->getUrl('customer/address/new', ['_secure' => true]);?>"><?php echo __('Address');?><i class="fa fa-address-book" aria-hidden="true"></i></a></li>
+        </ul>
+    </span>
+</div>
+<script type="text/javascript">
+        requirejs(['jquery'],function($){
+            $('.other-head').hover(function(){
+               $('.myaccount-dropdown').toggle();
+            });
+        });
+</script>
+

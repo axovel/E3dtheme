@@ -1,0 +1,171 @@
+<?php
+/**
+ * Custom tab list page template
+ *
+ * @var $block Magento\Framework\View\Element\Template
+ */
+?>
+<?php $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registryInstance = $objectManager->get('\Magento\Framework\Registry');
+$currentProduct = $registryInstance->registry('current_product');
+
+$isConfig = $currentProduct->getData('is_configurator');
+
+if($isConfig){
+    $cats = $currentProduct->getCategoryIds();
+
+    $category = $objectManager->get('Magento\Catalog\Api\CategoryRepositoryInterface');
+    if(count($cats) ){
+        $firstCategoryId = $cats[0];
+        $_category = $category->get($firstCategoryId);
+
+        $catUrl = $_category->getUrl();
+        $catName= $_category->getName();
+    }
+?>
+<div class="top-tab-configurable">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="customiz-tab-category active"><a class="nav-tabs-active" href="#customise"><?php echo __('Customise your ');echo $catName;?></a></li>
+        <li class="browse-tab-category"><a href="<?php echo $catUrl;?>"><?php echo __('Browse All ');echo $catName;?></a></li>
+        <li class="category-info"><a href="#browse"><?php echo __('Information');?></a></li>
+    </ul>
+</div>
+<?php if(is_object($currentProduct)):?>
+<div class="product-configurable-detail">
+    <h1 class="configurable-heading">
+        <?php echo $currentProduct->getName()?>
+    </h1>
+</div>
+<div class="price-in product-info-price"></div>
+<?php endif;?>
+
+<script type="text/javascript">
+
+    requirejs(['jquery'],function(jQuery){
+        jQuery('.product-info-main .product-info-price').hide();
+        jQuery('.product-name-detail').hide();
+        jQuery('.category-info').click(function(){
+
+            jQuery(this).addClass('active');
+            jQuery('.product-info-main').addClass('full-width');
+            jQuery('.customiz-tab-category').removeClass('active');
+            jQuery('.category-information-section').show();
+            jQuery('.product-add-form, .product-configurable-detail, .price-in,.detail-tab, .media').hide();
+        });
+
+        jQuery('.customiz-tab-category').click(function(){
+            jQuery(this).addClass('active');
+            jQuery('.product-info-main').removeClass('full-width');
+            jQuery('.category-info').removeClass('active');
+            jQuery('.category-information-section').hide();
+            jQuery('.product-add-form, .product-configurable-detail, .price-in,.detail-tab, .media').show();
+        });
+
+        jQuery('.browse-tab').click(function(){
+            jQuery(this).addClass('active');
+            jQuery('.customiz-tab').removeClass('active');
+            jQuery('.extra-detail, .upsell-msg').show();
+            jQuery('.product-name-detail,.simple-product-price, .box-tocart, .overview, .product-options-wrapper').hide();
+
+        });
+
+        jQuery('.customiz-tab').click(function(){
+            jQuery(this).addClass('active');
+            jQuery('.browse-tab').removeClass('active');
+            jQuery('.extra-detail, .upsell-msg').hide();
+            jQuery('.box-tocart, .overview, .product-options-wrapper').show();
+        });
+
+        });
+
+    function switchImage(id){
+        requirejs(['jquery','jquery/ui'],function(jQuery) {
+
+            //change price on top on custom option basis
+            var price = jQuery('.product-info-main .product-info-price').html();
+            jQuery('.price-in.product-info-price').html(price+'<div id="fadeout-div"></div>');
+
+            jQuery('.done_' + id).show();
+            jQuery('.arrow_' + id).hide();
+            jQuery( ".price-in.product-info-price" ).clearQueue();
+            jQuery( ".price-in.product-info-price").animate({ "backgroundColor": "yellow" }, "slow" );
+            jQuery( ".price-in.product-info-price").animate({ "backgroundColor": "" }, 5000 );
+            //jQuery('#fadeout-div').css("background-color", "yellow").fadeIn(1000).fadeOut(5000);
+
+        });
+    }
+
+
+</script>
+<?php }else{?>
+    <script type="text/javascript">
+        requirejs(['jquery'],function(jQuery){
+            jQuery('.product-info-price').hide();
+        })
+    </script>
+    <script type="text/javascript">
+    requirejs(['jquery'],function(jQuery){
+
+        jQuery('.customiz-tab').click(function(){
+            jQuery(this).addClass('active');
+            jQuery('.browse-tab').removeClass('active');
+            jQuery('.extra-detail, .upsell-msg').hide();
+
+            jQuery('.product-name-detail,.simple-product-price, .box-tocart, .overview').show();
+        });
+
+        jQuery('.browse-tab').click(function(){
+            jQuery(this).addClass('active');
+            jQuery('.customiz-tab').removeClass('active');
+            jQuery('.extra-detail, .upsell-msg').show();
+            jQuery('.product-name-detail,.simple-product-price, .box-tocart, .overview').hide();
+
+        });
+
+
+    })
+
+    </script>
+<?php }?>
+<script>
+    function swatchIcon(id){
+        requirejs(['jquery'],function(jQuery) {
+            jQuery(".swatch-attribute").each(function () {
+                var attr = jQuery(this).attr('option-selected');
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    jQuery(this).find('.done-icon').show();
+                    jQuery(this).find('.arrow-down-icon').hide();
+                }
+                else{
+                    jQuery(this).find('.done-icon').hide();
+                    jQuery(this).find('.arrow-down-icon').show();
+                }
+            });
+            var timeout = null;
+            jQuery('.price').addClass('recently-updated');
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            timeout = setTimeout(function () {
+                jQuery('.price').removeClass('recently-updated');
+            }, 1000);
+
+        })
+    }
+
+    function resellerSwitch(){
+        //set animation for price highlight
+        var timeout = null;
+        jQuery('.price').addClass('recently-updated');
+        if (timeout) {
+            clearTimeout(timeout);
+            timeout = null;
+        }
+        timeout = setTimeout(function () {
+            jQuery('.price').removeClass('recently-updated');
+        }, 1000);
+    }
+
+</script>
+

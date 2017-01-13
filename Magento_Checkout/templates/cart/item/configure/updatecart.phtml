@@ -1,0 +1,65 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Update Cart'); ?>
+<?php if ($_product->isSaleable()): ?>
+    <div class="box-tocart update">
+        <fieldset class="fieldset">
+            <?php if ($block->shouldRenderQuantity()): ?>
+                <div class="field qty">
+<!--                    <label class="label" for="qty"><span>--><?php ///* @escapeNotVerified */ echo __('Qty') ?><!--</span></label>-->
+                    <div class="control">
+                        <input type="number" name="qty" id="qty" maxlength="12" value="<?php /* @escapeNotVerified */ echo $block->getProductDefaultQty() * 1 ?>" title="<?php /* @escapeNotVerified */ echo __('Qty') ?>" class="input-text qty" data-validate="{'required-number':true,digits:true}"/>
+                        <button type="button" class="increase"><i class="fa fa-caret-up" aria-hidden="true"></i></button>
+                        <button type="button" class="decrease"><i class="fa fa-caret-down" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="actions">
+                <button type="submit"
+                        title="<?php /* @escapeNotVerified */ echo $buttonTitle ?>"
+                        class="action primary tocart"
+                        id="product-updatecart-button">
+                    <span><?php /* @escapeNotVerified */ echo $buttonTitle ?></span>
+                </button>
+                <?php echo $block->getChildHtml('', true) ?>
+            </div>
+        </fieldset>
+    </div>
+    <script type="text/x-magento-init">
+        {
+            "#product_addtocart_form": {
+                "validation": {},
+                "addToCart": {
+                    "cartButtonId": "#product-updatecart-button",
+                    "cartForm": "#product_addtocart_form"
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        requirejs(['jquery'],function(jQuery){
+            jQuery('.increase').click(function(){
+                qty = parseInt(jQuery('#qty').val());
+                qty =qty+1;
+                jQuery('#qty').val(qty);
+            })
+
+            jQuery('.decrease').click(function(){
+                qty = parseInt(jQuery('#qty').val());
+                if(qty>0){
+                    qty =qty-1;
+                }
+                jQuery('#qty').val(qty);
+            })
+        })
+    </script>
+<?php endif; ?>

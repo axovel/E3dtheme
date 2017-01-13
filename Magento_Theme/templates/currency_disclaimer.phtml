@@ -1,0 +1,13 @@
+<?php
+/**
+ * currency disclaimer template
+ */
+?>
+<?php
+$check='';
+if(isset($_SESSION['disclaimer'])):
+    echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('currency_disclaimer')->toHtml();
+    unset($_SESSION['disclaimer']);
+endif;
+
+?>

@@ -1,0 +1,31 @@
+<?php
+/**
+ * Custom tab list page template
+ *
+ * @var $block Magento\Framework\View\Element\Template
+ */
+?>
+<?php $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registryInstance = $objectManager->get('\Magento\Framework\Registry');
+$cat = $registryInstance->registry('current_category')
+                        ->getProductCollection()
+                        ->addAttributeToSelect('*')
+                        ->addFieldToFilter('is_configurator',1);
+$url = $this->getUrl();
+$catname = $registryInstance->registry('current_category')->getName();
+foreach($cat as $c){
+    $url =  $c->getProductUrl();
+    $name = $c->getName();
+    break;
+}
+?>
+ <div class="top-tab-container">
+    <ul class="nav nav-tabs nav-justified">
+        <?php if($this->getUrl()!=$url){?>
+        <li class="customiz-tab"><a class="nav-tabs-active" href="<?php echo $url?>"><?php echo __('Customise your ');echo $name;?></a></li>
+        <?php }?>
+        <li class="browse-tab active"><a href="#browse"><?php echo __('Browse All ');echo $catname;?></a></li>
+        <li class="category-info"><a href="#information"><?php echo __('Information');?></a></li>
+    </ul>
+</div>
+

@@ -1,0 +1,13 @@
+<script type="text/javascript">
+    requirejs(['jquery'],function(jQuery){
+        jQuery('table').hide();
+        jQuery('.show').show();
+        jQuery('.country').click(function(){
+            jQuery('.country').removeClass('active');
+            jQuery(this).addClass('active');
+            var id = jQuery(this).attr('id');
+            jQuery('table').hide();
+            jQuery('table.'+id).css('display','block');
+        });
+    });
+</script>
